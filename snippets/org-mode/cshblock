@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: cshblock
+# key: <s
+# condition: t
+# --
+#+BEGIN_SRC csh
+$1
+#+END_SRC
