@@ -54,6 +54,9 @@ Set up project directories
 #+end_src
 ** PDFs
 Use pdf-tools!
+#+begin_src elisp
+(pdf-tools-install)
+#+end_src
 ** TODO Shell
 Figure out how to change shells. Would like to be able to run csh and bash interchangeably
 ** Misc
