@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 
 # set up default output path here
 plot_path = Path("./plots")
-plot_path.mkdir(exists_ok=True)
+plot_path.mkdir(exist_ok=True)
 plot_name = plot_path / Path("tmp.png")
 
 # data here

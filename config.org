@@ -127,18 +127,39 @@ Using doct for declarative org-capture-templates
                             ":Created: %U"
                             ":END:"
                             "%?")
-                :children (("Project 1"  :keys "1"
-                            :headline   "Project 1"
+                :children (("Work"  :keys "w"
+                            :headline   "Work"
                             :todo-state "TODO"
-                            :hook (lambda () (message "\"Project 1\" selected.")))
-                            ("Project 2" :keys "2"
-                            :headline   "Project 2"
-                            :todo-state "TODO")
-                            ("Project 3"  :keys "3"
-                            :headline   "Project 3"
-                            :todo-state "TODO"))))))
+                            :hook (lambda () (message "\"Work\" selected.")))
+                            ("General" :keys "g"
+                            :headline   "General"
+                            :todo-state "TODO")))
+            ("Note" :keys "n"
+                :file "~/org/notes.org"
+                :prepend t
+                :template ("* %^{Description}"
+                            ":PROPERTIES:"
+                            ":Created: %U"
+                            ":END:"
+                            "%?")
+                :children (("Work"  :keys "w"
+                            :headline   "Work"
+                            :hook (lambda () (message "\"Work\" selected.")))
+                            ("General" :keys "g"
+                            :headline   "Misc")
+                            ("Music" :keys "m"
+                            :headline   "Misc")
+                            ("Science"  :keys "Science"
+                            :headline   "Science"))))))
 
 #+end_src
+
+#+RESULTS:
+| t  | Todo    |       |                                        |                                |          |   |       |                                                                                                                                                                                                                                                                           |
+| tw | Work    | entry | (file+headline ~/org/todo.org Work)    | (function doct--fill-template) | :prepend | t | :doct | (:doct-name Work :keys w :headline Work :todo-state TODO :hook (lambda nil (message "Work" selected.)) :inherited-keys tw :file ~/org/todo.org :prepend t :template (* %{todo-state} %^{Description} :PROPERTIES: :Created: %U :END: %?) :doct-custom (:todo-state TODO)) |
+| tg | General | entry | (file+headline ~/org/todo.org General) | (function doct--fill-template) | :prepend | t | :doct | (:doct-name General :keys g :headline General :todo-state TODO :inherited-keys tg :file ~/org/todo.org :prepend t :template (* %{todo-state} %^{Description} :PROPERTIES: :Created: %U :END: %?) :doct-custom (:todo-state TODO))                                         |
+| n  | Note    |       |                                        |                                |          |   |       |                                                                                                                                                                                                                                                                           |
+| nw | Work    | entry | (file+headline ~/org/notes.org Work)   | * %^{Description}              |          |   |       |                                                                                                                                                                                                                                                                           |
 
 
 ** Beautifying org-mode
@@ -294,6 +315,42 @@ RSS feeds are updated using C-c C-x g and updated along with opening up the feed
 "~/org/feeds.org" "Practical Fragments")))
 
 #+end_src
+
+#+begin_src elisp
+(setq elfeed-feeds
+      '(("https://blogs.sciencemag.org/pipeline/feed" blog)
+        "http://practicalfragments.blogspot.com/feeds/posts/default"
+        "https://pubmed.ncbi.nlm.nih.gov/rss/journals/9110829/?limit=15&name=J%20Biomol%20NMR&utm_campaign=journals"
+        "https://pubmed.ncbi.nlm.nih.gov/rss/search/1rgUKXhZzOOSeCofj8gdJK1nh4UEkQrpfCszfAT4Exq_f5woOu/?limit=15&utm_campaign=pubmed-2&fc=20210209213122"
+        )
+      )
+
+#+end_src
+
+#+RESULTS:
+| (https://blogs.sciencemag.org/pipeline/feed blog) | http://practicalfragments.blogspot.com/feeds/posts/default | https://pubmed.ncbi.nlm.nih.gov/rss/journals/9110829/?limit=15&name=J%20Biomol%20NMR&utm_campaign=journals | https://pubmed.ncbi.nlm.nih.gov/rss/search/1rgUKXhZzOOSeCofj8gdJK1nh4UEkQrpfCszfAT4Exq_f5woOu/?limit=15&utm_campaign=pubmed-2&fc=20210209213122 |
+
+*** Customising elfeed appearance (found this code below [[https:github.com/skeeto/elfeed/issues/190][here]])
+
+#+begin_src elisp
+(setq elfeed-show-mode-hook
+      (lambda ()
+	(set-face-attribute 'variable-pitch (selected-frame) :font (font-spec :family "Noto Serif" :size 14))
+	(setq fill-column 120)
+	(setq elfeed-show-entry-switch #'my-show-elfeed)))
+
+(defun my-show-elfeed (buffer)
+  (with-current-buffer buffer
+    (setq buffer-read-only nil)
+    (goto-char (point-min))
+    (re-search-forward "\n\n")
+    (fill-individual-paragraphs (point) (point-max))
+    (setq buffer-read-only t))
+  (switch-to-buffer buffer))
+#+end_src
+
+#+RESULTS:
+: my-show-elfeed
 
 *** TODO Limit number of entries (i.e. delete older entries automatically)
 * Magit
