@@ -1,10 +1,10 @@
 #+TITLE: Literate Emacs Config
 #+AUTHOR: Jacob Brady
-#+PROPERTY: header-args:emacs-lisp :tangle yes :cache yes :results silent :padline no
+#+PROPERTY: header-args:emacs-lisp :tangle yes :cache yes :results silent :padline no :comments link
 
 * General setup
 Set up user name and email
-#+begin_src elisp
+#+begin_src emacs-lisp
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
 ;; Place your private configuration here! Remember, you do not need to run 'doom
@@ -17,7 +17,7 @@ Set up user name and email
 #+end_src
 
 ** Theme
-#+begin_src elisp
+#+begin_src emacs-lisp
 ;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
 ;; are the three important ones:
 ;;
@@ -34,10 +34,351 @@ Set up user name and email
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-one)
+(setq doom-theme 'doom-peacock)
+
+(setq doom-font (font-spec :family "JetBrains Mono" :size 24)
+      doom-big-font (font-spec :family "JetBrains Mono" :size 36)
+      doom-variable-pitch-font (font-spec :family "DejaVu Serif" :size 24)
+      doom-serif-font (font-spec :family "DejaVu Serif" :weight 'light))
+#+end_src
+
+#+RESULTS:
+: #<font-spec nil nil DejaVu\ Serif nil nil light nil nil nil nil nil nil nil>
+
+** init.el
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle no
+:END:
+Here is the init.el code which is split into sections marked <<section-name>>
+
+#+name: init.el
+#+attr_html: :collapsed t
+#+begin_src emacs-lisp :tangle "init.el" :noweb no-export :comments none
+;;; init.el -*- lexical-binding: t; -*-
+
+;; This file controls what Doom modules are enabled and what order they load
+;; in. Remember to run 'doom sync' after modifying it!
+
+;; NOTE Press 'SPC h d h' (or 'C-h d h' for non-vim users) to access Doom's
+;;      documentation. There you'll find a "Module Index" link where you'll find
+;;      a comprehensive list of Doom's modules and what flags they support.
+
+;; NOTE Move your cursor over a module's name (or its flags) and press 'K' (or
+;;      'C-c c k' for non-vim users) to view its documentation. This works on
+;;      flags as well (those symbols that start with a plus).
+;;
+;;      Alternatively, press 'gd' (or 'C-c c d') on a module to browse its
+;;      directory (for easy access to its source code).
+
+(doom! :input
+       ;;chinese
+       ;;japanese
+       ;;layout            ; auie,ctsrnm is the superior home row
+
+       :completion
+       <<doom-completion>>
+
+       :ui
+       <<doom-ui>>
+
+       :editor
+       <<doom-editor>>
+
+       :emacs
+       <<doom-emacs>>
+
+       :term
+       <<doom-term>>
+
+       :checkers
+       <<doom-checkers>>
+
+       :tools
+       <<doom-tools>>
+
+       :os
+       <<doom-os>>
+
+       :lang
+       <<doom-lang>>
+
+       :email
+       ;;(mu4e +gmail)
+       ;;notmuch
+       ;;(wanderlust +gmail)
+
+       :app
+       <<doom-app>>
+
+       :config
+       <<doom-config>> 
+)
+#+end_src
+*** doom-completion
+#+name: doom-completion
+#+begin_src emacs-lisp
+    company           ; the ultimate code completion backend
+    ;;helm              ; the *other* search engine for love and life
+    ;;ido               ; the other *other* search engine...
+    (ivy               ; a search engine for love and life
+     +icons
+     +prescient)
+#+end_src
+
+*** doom-ui
+#+name: doom-ui
+#+begin_src emacs-lisp
+    ;;deft              ; notational velocity for Emacs
+    doom              ; what makes DOOM look the way it does
+    doom-dashboard    ; a nifty splash screen for Emacs
+    doom-quit         ; DOOM quit-message prompts when you quit Emacs
+    ;;(emoji +unicode)  ; 🙂
+    ;;fill-column       ; a `fill-column' indicator
+    hl-todo           ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
+    ;;hydra
+    ;;indent-guides     ; highlighted indent columns
+    ;;ligatures         ; ligatures and symbols to make your code pretty again
+    ;;minimap           ; show a map of the code on the side
+    modeline          ; snazzy, Atom-inspired modeline, plus API
+    ;;nav-flash         ; blink cursor line after big motions
+    neotree           ; a project drawer, like NERDTree for vim
+    ophints           ; highlight the region an operation acts on
+    (popup +defaults)   ; tame sudden yet inevitable temporary windows
+    ;;tabs              ; a tab bar for Emacs
+    ;;treemacs          ; a project drawer, like neotree but cooler
+    ;;unicode           ; extended unicode support for various languages
+    vc-gutter         ; vcs diff in the fringe
+    vi-tilde-fringe   ; fringe tildes to mark beyond EOB
+    ;;window-select     ; visually switch windows
+    workspaces        ; tab emulation, persistence & separate workspaces
+    ;;zen               ; distraction-free coding or writing
+#+end_src
+
+*** doom-editor
+#+name: doom-editor
+#+begin_src emacs-lisp
+    (evil +everywhere); come to the dark side, we have cookies
+    file-templates    ; auto-snippets for empty files
+    fold              ; (nigh) universal code folding
+    (format +onsave)  ; automated prettiness
+    ;;god               ; run Emacs commands without modifier keys
+    ;;lispy             ; vim for lisp, for people who don't like vim
+    ;;multiple-cursors  ; editing in many places at once
+    ;;objed             ; text object editing for the innocent
+    ;;parinfer          ; turn lisp into python, sort of
+    ;;rotate-text       ; cycle region at point between text candidates
+    snippets          ; my elves. They type so I don't have to
+    ;;word-wrap         ; soft wrapping with language-aware indent
+#+end_src
+
+*** doom-emacs
+#+name: doom-emacs
+#+begin_src emacs-lisp
+    (dired +icons)    ; making dired pretty [functional]
+    electric          ; smarter, keyword-based electric-indent
+    ;;ibuffer         ; interactive buffer management
+    undo              ; persistent, smarter undo for your inevitable mistakes
+    vc                ; version-control and Emacs, sitting in a tree
+#+end_src
+
+*** doom-term
+#+name: doom-term
+#+begin_src emacs-lisp
+    ;;eshell            ; the emacs-lisp shell that works everywhere
+    ;;shell             ; simple shell REPL for Emacs
+    ;;term              ; basic terminal emulator for Emacs
+    vterm             ; the best terminal emulation in Emacs
+#+end_src
+*** doom-checkers
+#+name: doom-checkers
+#+begin_src emacs-lisp 
+    syntax              ; tasing you for every semicolon you forget
+    (:if (executable-find "aspell") spell) ; tasing you for misspelling mispelling
+    ;;grammar           ; tasing grammar mistake every you make
+#+end_src
+*** doom-tools
+#+name: doom-tools
+#+begin_src emacs-lisp
+    ;;ansible
+    ;;debugger          ; FIXME stepping through code, to help you add bugs
+    ;;direnv
+    ;;docker
+    ;;editorconfig      ; let someone else argue about tabs vs spaces
+    ;;ein               ; tame Jupyter notebooks with emacs
+    (eval +overlay)     ; run code, run (also, repls)
+    ;;gist              ; interacting with github gists
+    lookup              ; navigate your code and its documentation
+    ;;lsp
+    magit             ; a git porcelain for Emacs
+    ;;make              ; run make tasks from Emacs
+    ;;pass              ; password manager for nerds
+    ;;pdf               ; pdf enhancements
+    ;;prodigy           ; FIXME managing external services & code builders
+    ;;rgb               ; creating color strings
+    ;;taskrunner        ; taskrunner for all your projects
+    ;;terraform         ; infrastructure as code
+    ;;tmux              ; an API for interacting with tmux
+    ;;upload            ; map local to remote projects via ssh/ftp
+#+end_src
+*** doom-os
+#+name: doom-os
+#+begin_src emacs-lisp
+    (:if IS-MAC macos)  ; improve compatibility with macOS
+    ;;tty               ; improve the terminal Emacs experience
+#+end_src
+*** doom-lang
+#+name: doom-lang
+#+begin_src emacs-lisp
+    ;;agda              ; types of types of types of types...
+    ;;cc                ; C/C++/Obj-C madness
+    ;;clojure           ; java with a lisp
+    ;;common-lisp       ; if you've seen one lisp, you've seen them all
+    ;;coq               ; proofs-as-programs
+    ;;crystal           ; ruby at the speed of c
+    ;;csharp            ; unity, .NET, and mono shenanigans
+    ;;data              ; config/data formats
+    ;;(dart +flutter)   ; paint ui and not much else
+    ;;elixir            ; erlang done right
+    ;;elm               ; care for a cup of TEA?
+    elisp        ; drown in parentheses
+    ;;erlang            ; an elegant language for a more civilized age
+    ;;ess               ; emacs speaks statistics
+    ;;faust             ; dsp, but you get to keep your soul
+    ;;fsharp            ; ML stands for Microsoft's Language
+    ;;fstar             ; (dependent) types and (monadic) effects and Z3
+    ;;gdscript          ; the language you waited for
+    ;;(go +lsp)         ; the hipster dialect
+    ;;(haskell +dante)  ; a language that's lazier than I am
+    ;;hy                ; readability of scheme w/ speed of python
+    ;;idris             ; a language you can depend on
+    json              ; At least it ain't XML
+    ;;(java +meghanada) ; the poster child for carpal tunnel syndrome
+    ;;javascript        ; all(hope(abandon(ye(who(enter(here))))))
+    ;;julia             ; a better, faster MATLAB
+    ;;kotlin            ; a better, slicker Java(Script)
+    latex             ; writing papers in Emacs has never been so fun
+    ;;lean
+    ;;factor
+    ;;ledger            ; an accounting system in Emacs
+    ;;lua               ; one-based indices? one-based indices
+    markdown          ; writing docs for people to ignore
+    ;;nim               ; python + lisp at the speed of c
+    ;;nix               ; I hereby declare "nix geht mehr!"
+    ;;ocaml             ; an objective camel
+    (org
+     +pretty
+     +journal
+     +roam
+     +present
+     +dragndrop
+     +jupyter
+     +gnuplot
+     )
+                                            ; organize your plain life in plain text
+    ;;php               ; perl's insecure younger brother
+    ;;plantuml          ; diagrams for confusing people more
+    ;;purescript        ; javascript, but functional
+    (python +lsp +pyright)           ; beautiful is better than ugly
+    ;;qt                ; the 'cutest' gui framework ever
+    racket            ; a DSL for DSLs
+    ;;raku              ; the artist formerly known as perl6
+    ;;rest              ; Emacs as a REST client
+    ;;rst               ; ReST in peace
+    ;;(ruby +rails)     ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
+    ;;rust              ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
+    ;;scala             ; java, but good
+    ;;scheme            ; a fully conniving family of lisps
+    sh                ; she sells {ba,z,fi}sh shells on the C xor
+    ;;sml
+    ;;solidity          ; do you need a blockchain? No.
+    ;;swift             ; who asked for emoji variables?
+    ;;terra             ; Earth and Moon in alignment for performance.
+    ;;web               ; the tubes
+    yaml              ; JSON, but readable
+#+end_src
+*** doom-app
+#+name: doom-app
+#+begin_src emacs-lisp
+    ;;calendar
+    ;;irc               ; how neckbeards socialize
+    (rss +org)        ; emacs as an RSS reader
+    ;;twitter           ; twitter client https://twitter.com/vnought
+#+end_src
+*** doom-config
+#+name: doom-config
+#+begin_src emacs-lisp
+    literate
+    (default +bindings +smartparens +snippets +evil-commands)
+#+end_src
+** packages.el
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle no
+:END:
+#+name: packages.el
+#+attr_html: :collapsed t
+#+begin_src emacs-lisp :tangle "packages.el" :noweb no-export :comments none
+;; -*- no-byte-compile: t; -*-
+;;; $DOOMDIR/packages.el
+
+;; To install a package with Doom you must declare them here and run 'doom sync'
+;; on the command line, then restart Emacs for the changes to take effect -- or
+;; use 'M-x doom/reload'.
+
+
+;; To install SOME-PACKAGE from MELPA, ELPA or emacsmirror:
+(package! scihub)
+(package! doct)
+(package! elisp-format)
+(package! pdf-tools)
+
+
+;; To install a package directly from a remote git repo, you must specify a
+;; `:recipe'. You'll find documentation on what `:recipe' accepts here:
+;; https://github.com/raxod502/straight.el#the-recipe-format
+                                        ;(package! another-package
+                                        ;  :recipe (:host github :repo "username/repo"))
+
+;; If the package you are trying to install does not contain a PACKAGENAME.el
+;; file, or is located in a subdirectory of the repo, you'll need to specify
+;; `:files' in the `:recipe':
+                                        ;(package! this-package
+                                        ;  :recipe (:host github :repo "username/repo"
+                                        ;           :files ("some-file.el" "src/lisp/*.el")))
+
+;; If you'd like to disable a package included with Doom, you can do so here
+;; with the `:disable' property:
+                                        ;(package! builtin-package :disable t)
+
+;; You can override the recipe of a built in package without having to specify
+;; all the properties for `:recipe'. These will inherit the rest of its recipe
+;; from Doom or MELPA/ELPA/Emacsmirror:
+                                        ;(package! builtin-package :recipe (:nonrecursive t))
+                                        ;(package! builtin-package-2 :recipe (:repo "myfork/package"))
+
+;; Specify a `:branch' to install a package from a particular branch or tag.
+;; This is required for some packages whose default branch isn't 'master' (which
+;; our package manager can't deal with; see raxod502/straight.el#279)
+                                        ;(package! builtin-package :recipe (:branch "develop"))
+
+;; Use `:pin' to specify a particular commit to install.
+                                        ;(package! builtin-package :pin "1a2b3c4d5e")
+
+
+;; Doom's packages are pinned to a specific commit and updated from release to
+;; release. The `unpin!' macro allows you to unpin single packages...
+                                        ;(unpin! pinned-package)
+;; ...or multiple packages
+                                        ;(unpin! pinned-package another-pinned-package)
+;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
+                                        ;(unpin! t)
+#+end_src
+** Evil mode configuration
+Allows for more granular undo. Default (nil) undo will undo entire block from a given 'insert mode' action.
+#+begin_src emacs-lisp
+(setq evil-want-fine-undo t)
 #+end_src
 ** Start emacs in full screen mode
-#+begin_src elisp
+#+begin_src emacs-lisp
 
 (use-package frame
   :ensure t
@@ -46,58 +387,90 @@ Set up user name and email
 
 #+end_src
 ** Projects
-Set up project directories
-#+begin_src elisp
+Set up project directories. Apparently these need to be stringp.
+#+begin_src emacs-lisp
 (projectile-add-known-project "~/org")
 ;; (projectile-add-known-project "~/org-roam")
 (projectile-add-known-project "~/Documents")
 #+end_src
 ** PDFs
 Use pdf-tools!
-#+begin_src elisp
+#+begin_src emacs-lisp
 (pdf-tools-install)
 #+end_src
 ** TODO Shell
 Figure out how to change shells. Would like to be able to run csh and bash interchangeably
 ** Misc
 
-#+begin_src elisp
+#+begin_src emacs-lisp
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type t)
 #+end_src
 
+* org-mode
+:PROPERTIES:
+:CUSTOM_ID: org
+:header-args:emacs-lisp: :tangle no :noweb-ref org-conf
+:END:
+
 Startup org-mode with inline images:
-#+begin_src elisp
+#+begin_src emacs-lisp
 (setq org-startup-with-inline-images t)
 #+end_src
 
-* Org-mode
+#+begin_src emacs-lisp
+(after! org
+  <<org-conf>>
+  )
+#+end_src
 
 Basic org-mode set-up
-#+begin_src elisp
+#+begin_src emacs-lisp
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/org/")
+(setq org-babel-default-header-args
+      '((:session . "none")
+        (:results . "replace")
+        (:exports . "code")
+        (:cache . "no")
+        (:noweb . "no")
+        (:hlines . "no")
+        (:tangle . "no")
+        (:comments . "link")))
 #+end_src
+** Spellcheck
+#+begin_src emacs-lisp
+(set-company-backend!
+  '(text-mode
+    markdown-mode
+    gfm-mode)
+  '(:seperate
+    company-ispell
+    company-files
+    company-yasnippet))
+#+end_src
+** org-babel
+
 
 ** Notes
-#+begin_src elisp
-(after! org
-  (setq org-default-notes-file (expand-file-name "notes.org" org-directory)))
+#+begin_src emacs-lisp
+;;(after! org
+;;  (setq org-default-notes-file (expand-file-name "notes.org" org-directory)))
 #+end_src
 ** TODO Refiling
 Understand refiling
 
 ** Agenda
 
-#+begin_src elisp
+#+begin_src emac-lisp
 ;; Include entries from the emacs diary
 (setq org-agenda-include-diary t)
 #+end_src
 
 All files in the org directory can contribute to the org-agenda
-#+begin_src elisp
+#+begin_src emacs-lisp
 (setq org-agenda-files (list org-directory))
                         ;"~/org/holidays.org"
                         ;"~/org/todo.org"))
@@ -107,127 +480,205 @@ All files in the org directory can contribute to the org-agenda
 #+end_src
 
 The following will append into archive file where %s is the file name from which archive is being created.
-#+begin_src elisp
-(setq org-archive-location "~/org/archive/%s_archive::")
+#+begin_src emacs-lisp
+(setq org-archive-location (concat org-directory "archive/%s_archive::"))
 #+end_src
 
 [[https:www.rousette.org.uk/archives/doom-emacs-tweaks-org-journal-and-org-super-agenda/][Interesting blog post about org-super-agenda]]
-** Capture templates
+** Beautifying org-mode
+#+begin_src emacs-lisp
+;;(package! org-pretty-table-mode
+;;  :recipe (:host github :repo "Fuco1/org-pretty-table"))
+#+end_src
+*** TODO understand this code!
+#+begin_src emacs-lisp
+;;(font-lock-add-keywords 'org-mode
+;;                        '(("^ *\\([-]\\) "
+;;                           (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+;;;
+;;(let* ((variable-tuple
+;;        (cond
+;;              ((x-list-fonts "DejaVu Serif")    '(:font "DejaVu Serif"))
+;;              ((x-list-fonts "ETBembo")         '(:font "ETBembo"))
+;;              ((x-list-fonts "Source Sans Pro") '(:font "Source Sans Pro"))
+;;              ((x-list-fonts "Lucida Grande")   '(:font "Lucida Grande"))
+;;              ((x-list-fonts "Verdana")         '(:font "Verdana"))
+;;              ((x-family-fonts "Sans Serif")    '(:family "Sans Serif"))
+;;              (nil (warn "Cannot find a Sans Serif Font.  Install Source Sans Pro."))))
+;;       (headline `(:inherit default :weight bold)))
+;;
+;;  (custom-theme-set-faces
+;;   'user
+;;   `(org-level-8 ((t (,@headline ,@variable-tuple))))
+;;   `(org-level-7 ((t (,@headline ,@variable-tuple))))
+;;   `(org-level-6 ((t (,@headline ,@variable-tuple))))
+;;   `(org-level-5 ((t (,@headline ,@variable-tuple :height 1.0))))
+;;   `(org-level-4 ((t (,@headline ,@variable-tuple :height 1.1))))
+;;   `(org-level-3 ((t (,@headline ,@variable-tuple :height 1.2))))
+;;   `(org-level-2 ((t (,@headline ,@variable-tuple :height 1.3))))
+;;   `(org-level-1 ((t (,@headline ,@variable-tuple :height 1.4))))
+;;   `(org-document-title ((t (,@headline ,@variable-tuple :height 1.0 :underline nil))))))
+;;
+;;(custom-theme-set-faces
+;; 'user
+;; '(variable-pitch ((t (:family "DejaVu Serif" :height 120))))
+;; '(fixed-pitch ((t ( :family "Fira Code" :height 100)))))
+;;
+;;(add-hook 'org-mode-hook 'variable-pitch-mode)
+;;(add-hook 'org-mode-hook 'visual-line-mode)
+;;
+;;(custom-theme-set-faces
+;; 'user
+;; '(org-block ((t (:inherit fixed-pitch))))
+;; '(org-code ((t (:inherit (shadow fixed-pitch)))))
+;; '(org-document-info ((t (:foreground "dark orange"))))
+;; '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
+;; '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
+;; '(org-link ((t (:foreground "royal blue" :underline t))))
+;; '(org-meta-line ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+;; '(org-property-value ((t (:inherit fixed-pitch))) t)
+;; '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+;; '(org-table ((t (:inherit fixed-pitch :foreground "#83a598"))))
+;; '(org-tag ((t (:inherit (shadow fixed-pitch) :weight bold :height 0.8))))
+;; '(org-verbatim ((t (:inherit (shadow fixed-pitch))))))
+#+end_src
 
-Using doct for declarative org-capture-templates
+#+RESULTS:
 
-#+begin_src elisp
+** Exporting
+Found this nice code snippet for creating individual export directories depending on file extension type ([[https:rwx.io/posts/org-export-configurations/][link]]).
+#+begin_src emacs-lisp
 
-(setq org-capture-templates
-    (doct '(("Todo" :keys "t"
-                :file "~/org/todo.org"
-                :prepend t
-                :template ("* %{todo-state} %^{Description}"
-                            ":PROPERTIES:"
-                            ":Created: %U"
-                            ":END:"
-                            "%?")
-                :children (("Work"  :keys "w"
-                            :headline   "Work"
-                            :todo-state "TODO"
-                            :hook (lambda () (message "\"Work\" selected.")))
-                            ("General" :keys "g"
-                            :headline   "General"
-                            :todo-state "TODO")))
-            ("Note" :keys "n"
-                :file "~/org/notes.org"
-                :prepend t
-                :template ("* %^{Description}"
-                            ":PROPERTIES:"
-                            ":Created: %U"
-                            ":END:"
-                            "%?")
-                :children (("Work"  :keys "w"
-                            :headline   "Work"
-                            :hook (lambda () (message "\"Work\" selected.")))
-                            ("General" :keys "g"
-                            :headline   "Misc")
-                            ("Music" :keys "m"
-                            :headline   "Misc")
-                            ("Science"  :keys "Science"
-                            :headline   "Science"))))))
+    (defvar org-export-output-directory-prefix "export_" "prefix of directory used for org-mode export")
+
+    (defadvice org-export-output-file-name (before org-add-export-dir activate)
+      "Modifies org-export to place exported files in a different directory"
+      (when (not pub-dir)
+          (setq pub-dir (concat org-export-output-directory-prefix (substring extension 1)))
+          (when (not (file-directory-p pub-dir))
+           (make-directory pub-dir))))
+
+
+#+end_src
+** Python
+
+The following allows org babel to use a particular python environment. In this case I'm using anaconda python.
+
+#+begin_src emacs-lisp
+(setq org-babel-python-command "/home/j-brady/anaconda3/bin/python")
+#+end_src
+
+
+
+;; Here are some additional functions/macros that could help you configure Doom:
+;;
+;; - `load!' for loading external *.el files relative to this one
+;; - `use-package!' for configuring packages
+;; - `after!' for running code after a package has loaded
+;; - `add-load-path!' for adding directories to the `load-path', relative to
+;;   this file. Emacs searches the `load-path' when you load packages with
+;;   `require' or `use-package'.
+;; - `map!' for binding new keys
+;;
+;; To get information about any of these functions/macros, move the cursor over
+;; the highlighted symbol at press 'K' (non-evil users must press 'C-c c k').
+;; This will open documentation for it, including demos of how they are used.
+;;
+;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
+;; they are implemented.
+
+** RSS feeds
+
+RSS feeds are updated using C-c C-x g and updated along with opening up the feed.org file with C-c C-x G
+
+#+begin_src emacs-lisp
+
+(setq org-feed-alist '(("InThePipeLine" "https://blogs.sciencemag.org/pipeline/feed"
+"~/org/feeds.org" "In The Pipeline - Derek Lowe")
+
+("eLife - Cancer Biology" "https://elifesciences.org/rss/subject/cancer-biology.xml"
+"~/org/feeds.org" "eLife - Cancer Biology")
+
+("Fierce Pharma" "https://www.fiercepharma.com/rss/xml" "~/org/feeds.org" "Fierce Pharma")
+; ("The Motley Fool" "https://www.fool.com/feeds/index.aspx?id=foolwatch&format=rss2"
+; "~/org/feeds.org" "The Motley Fool")
+
+("Practical Fragments" "http://practicalfragments.blogspot.com/feeds/posts/default"
+"~/org/feeds.org" "Practical Fragments")))
+
+#+end_src
+
+#+begin_src emacs-lisp
+(setq elfeed-feeds
+      '(("https://blogs.sciencemag.org/pipeline/feed" blog)
+        "http://practicalfragments.blogspot.com/feeds/posts/default"
+        "https://pubmed.ncbi.nlm.nih.gov/rss/journals/9110829/?limit=15&name=J%20Biomol%20NMR&utm_campaign=journals"
+        "https://pubmed.ncbi.nlm.nih.gov/rss/search/1rgUKXhZzOOSeCofj8gdJK1nh4UEkQrpfCszfAT4Exq_f5woOu/?limit=15&utm_campaign=pubmed-2&fc=20210209213122"
+        )
+      )
 
 #+end_src
 
 #+RESULTS:
-| t  | Todo    |       |                                        |                                |          |   |       |                                                                                                                                                                                                                                                                           |
-| tw | Work    | entry | (file+headline ~/org/todo.org Work)    | (function doct--fill-template) | :prepend | t | :doct | (:doct-name Work :keys w :headline Work :todo-state TODO :hook (lambda nil (message "Work" selected.)) :inherited-keys tw :file ~/org/todo.org :prepend t :template (* %{todo-state} %^{Description} :PROPERTIES: :Created: %U :END: %?) :doct-custom (:todo-state TODO)) |
-| tg | General | entry | (file+headline ~/org/todo.org General) | (function doct--fill-template) | :prepend | t | :doct | (:doct-name General :keys g :headline General :todo-state TODO :inherited-keys tg :file ~/org/todo.org :prepend t :template (* %{todo-state} %^{Description} :PROPERTIES: :Created: %U :END: %?) :doct-custom (:todo-state TODO))                                         |
-| n  | Note    |       |                                        |                                |          |   |       |                                                                                                                                                                                                                                                                           |
-| nw | Work    | entry | (file+headline ~/org/notes.org Work)   | * %^{Description}              |          |   |       |                                                                                                                                                                                                                                                                           |
+| (https://blogs.sciencemag.org/pipeline/feed blog) | http://practicalfragments.blogspot.com/feeds/posts/default | https://pubmed.ncbi.nlm.nih.gov/rss/journals/9110829/?limit=15&name=J%20Biomol%20NMR&utm_campaign=journals | https://pubmed.ncbi.nlm.nih.gov/rss/search/1rgUKXhZzOOSeCofj8gdJK1nh4UEkQrpfCszfAT4Exq_f5woOu/?limit=15&utm_campaign=pubmed-2&fc=20210209213122 |
 
+*** Customising elfeed appearance (found this code below [[https:github.com/skeeto/elfeed/issues/190][here]])
 
-** Beautifying org-mode
-*** TODO understand this code!
-#+begin_src elisp
+#+begin_src emacs-lisp
+(setq elfeed-show-mode-hook
+      (lambda ()
+	(set-face-attribute 'variable-pitch (selected-frame) :font (font-spec :family "Noto Serif" :size 14))
+	(setq fill-column 120)
+	(setq elfeed-show-entry-switch #'my-show-elfeed)))
 
-;(font-lock-add-keywords 'org-mode
-;                        '(("^ *\\([-]\\) "
-;                           (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
-;
-;(let* ((variable-tuple
-;        (cond ((x-list-fonts "ETBembo")         '(:font "ETBembo"))
-;              ((x-list-fonts "Source Sans Pro") '(:font "Source Sans Pro"))
-;              ((x-list-fonts "Lucida Grande")   '(:font "Lucida Grande"))
-;              ((x-list-fonts "Verdana")         '(:font "Verdana"))
-;              ((x-family-fonts "Sans Serif")    '(:family "Sans Serif"))
-;              (nil (warn "Cannot find a Sans Serif Font.  Install Source Sans Pro."))))
-;       (headline           `(:inherit default :weight bold)))
-;
-;  (custom-theme-set-faces
-;   'user
-;   `(org-level-8 ((t (,@headline ,@variable-tuple))))
-;   `(org-level-7 ((t (,@headline ,@variable-tuple))))
-;   `(org-level-6 ((t (,@headline ,@variable-tuple))))
-;   `(org-level-5 ((t (,@headline ,@variable-tuple :height 1.1))))
-;   `(org-level-4 ((t (,@headline ,@variable-tuple :height 1.2))))
-;   `(org-level-3 ((t (,@headline ,@variable-tuple :height 1.3))))
-;   `(org-level-2 ((t (,@headline ,@variable-tuple :height 1.4))))
-;   `(org-level-1 ((t (,@headline ,@variable-tuple :height 1.5))))
-;   `(org-document-title ((t (,@headline ,@variable-tuple :height 2.0 :underline nil))))))
-;
-;
-;(custom-theme-set-faces
-; 'user
-; '(variable-pitch ((t (:family "ETBembo" :height 160))))
-; '(fixed-pitch ((t ( :family "Fira Code" :height 160)))))
-;
-;(add-hook 'org-mode-hook 'variable-pitch-mode)
-;(add-hook 'org-mode-hook 'visual-line-mode)
-;
-;(custom-theme-set-faces
-; 'user
-; '(org-block ((t (:inherit fixed-pitch))))
-; '(org-code ((t (:inherit (shadow fixed-pitch)))))
-; '(org-document-info ((t (:foreground "dark orange"))))
-; '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
-; '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
-; '(org-link ((t (:foreground "royal blue" :underline t))))
-; '(org-meta-line ((t (:inherit (font-lock-comment-face fixed-pitch)))))
-; '(org-property-value ((t (:inherit fixed-pitch))) t)
-; '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
-; '(org-table ((t (:inherit fixed-pitch :foreground "#83a598"))))
-; '(org-tag ((t (:inherit (shadow fixed-pitch) :weight bold :height 0.8))))
-; '(org-verbatim ((t (:inherit (shadow fixed-pitch))))))
+(defun my-show-elfeed (buffer)
+  (with-current-buffer buffer
+    (setq buffer-read-only nil)
+    (goto-char (point-min))
+    (re-search-forward "\n\n")
+    (fill-individual-paragraphs (point) (point-max))
+    (setq buffer-read-only t))
+  (switch-to-buffer buffer))
 #+end_src
 
-** Org-roam
+*** TODO Limit number of entries (i.e. delete older entries automatically)
+* Magit
+** Default directory setup
+#+begin_src emacs-lisp
+(setq magit-repository-directories '(("~/src" . 3) ("~/.emacs.d") ("~/.doom")))
+#+end_src
+** TODO Automatically signing commits
+Understand this code!
+#+begin_src emacs-lisp
+;(after! magit
+;  (setq magit-commit-arguments '("--gpg-sign=B511A07485FD1360")
+;        magit-rebase-arguments '("--autostash" "--gpg-sign=B511A07485FD1360")
+;        magit-pull-arguments   '("--rebase" "--autostash" "--gpg-sign=B511A07485FD1360"))
+;  (magit-define-popup-option 'magit-rebase-popup
+;    ?S "Sign using gpg" "--gpg-sign=" #'magit-read-gpg-secret-key))
+#+end_src
+** Magit hub
+#+begin_src emacs-lisp
+(setq +magit-hub-features t)
+#+end_src
+** Preferred git url method
+#+begin_src emacs-lisp
+(after! magithub (setq magithub-preferred-remote-method 'git_url))
+#+end_src
+** Default directory for cloning new repositories
+#+begin_src emacs-lisp
+(after! magithub (setq magithub-clone-default-directory "~/src/github.com"))
+#+end_src
+* Org-roam
 Setting org-roam directory
-#+begin_src elisp
-
+#+begin_src emacs-lisp :tangle yes
 (setq org-roam-directory "~/org/org-roam")
 (add-hook 'after-init-hook 'org-roam-mode)
-
 #+end_src
 
 *** Dailies
 
-#+begin_src elisp
+#+begin_src emacs-lisp
 
 (setq org-roam-dailies-directory "daily/")
 (setq org-roam-dailies-capture-templates
@@ -252,131 +703,49 @@ Setting org-roam directory
          :head "#+title: %<%Y-%m-%d>\n"
          :olp ("Journal"))))
 #+end_src
-** Exporting
-Found this nice code snippet for creating individual export directories depending on file extension type ([[https:rwx.io/posts/org-export-configurations/][link]]).
-#+begin_src elisp
+    
+* Capture templates
 
-    (defvar org-export-output-directory-prefix "export_" "prefix of directory used for org-mode export")
+Using doct for declarative org-capture-templates
 
-    (defadvice org-export-output-file-name (before org-add-export-dir activate)
-      "Modifies org-export to place exported files in a different directory"
-      (when (not pub-dir)
-          (setq pub-dir (concat org-export-output-directory-prefix (substring extension 1)))
-          (when (not (file-directory-p pub-dir))
-           (make-directory pub-dir))))
+#+begin_src emacs-lisp
+(after! org
+  :config
 
+  ;;(use-package! doct
+  ;;  :commands (doct))
 
-#+end_src
-** Python
-
-The following allows org babel to use a particular python environment. In this case I'm using anaconda python.
-
-#+begin_src elisp
-(setq org-babel-python-command "/home/j-brady/anaconda3/bin/python")
-#+end_src
-
-
-
-;; Here are some additional functions/macros that could help you configure Doom:
-;;
-;; - `load!' for loading external *.el files relative to this one
-;; - `use-package!' for configuring packages
-;; - `after!' for running code after a package has loaded
-;; - `add-load-path!' for adding directories to the `load-path', relative to
-;;   this file. Emacs searches the `load-path' when you load packages with
-;;   `require' or `use-package'.
-;; - `map!' for binding new keys
-;;
-;; To get information about any of these functions/macros, move the cursor over
-;; the highlighted symbol at press 'K' (non-evil users must press 'C-c c k').
-;; This will open documentation for it, including demos of how they are used.
-;;
-;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
-;; they are implemented.
-
-
-** RSS feeds
-
-RSS feeds are updated using C-c C-x g and updated along with opening up the feed.org file with C-c C-x G
-
-#+begin_src elisp
-
-(setq org-feed-alist '(("InThePipeLine" "https://blogs.sciencemag.org/pipeline/feed"
-"~/org/feeds.org" "In The Pipeline - Derek Lowe")
-
-("eLife - Cancer Biology" "https://elifesciences.org/rss/subject/cancer-biology.xml"
-"~/org/feeds.org" "eLife - Cancer Biology")
-
-("Fierce Pharma" "https://www.fiercepharma.com/rss/xml" "~/org/feeds.org" "Fierce Pharma")
-; ("The Motley Fool" "https://www.fool.com/feeds/index.aspx?id=foolwatch&format=rss2"
-; "~/org/feeds.org" "The Motley Fool")
-
-("Practical Fragments" "http://practicalfragments.blogspot.com/feeds/posts/default"
-"~/org/feeds.org" "Practical Fragments")))
-
-#+end_src
-
-#+begin_src elisp
-(setq elfeed-feeds
-      '(("https://blogs.sciencemag.org/pipeline/feed" blog)
-        "http://practicalfragments.blogspot.com/feeds/posts/default"
-        "https://pubmed.ncbi.nlm.nih.gov/rss/journals/9110829/?limit=15&name=J%20Biomol%20NMR&utm_campaign=journals"
-        "https://pubmed.ncbi.nlm.nih.gov/rss/search/1rgUKXhZzOOSeCofj8gdJK1nh4UEkQrpfCszfAT4Exq_f5woOu/?limit=15&utm_campaign=pubmed-2&fc=20210209213122"
-        )
-      )
-
-#+end_src
-
-#+RESULTS:
-| (https://blogs.sciencemag.org/pipeline/feed blog) | http://practicalfragments.blogspot.com/feeds/posts/default | https://pubmed.ncbi.nlm.nih.gov/rss/journals/9110829/?limit=15&name=J%20Biomol%20NMR&utm_campaign=journals | https://pubmed.ncbi.nlm.nih.gov/rss/search/1rgUKXhZzOOSeCofj8gdJK1nh4UEkQrpfCszfAT4Exq_f5woOu/?limit=15&utm_campaign=pubmed-2&fc=20210209213122 |
-
-*** Customising elfeed appearance (found this code below [[https:github.com/skeeto/elfeed/issues/190][here]])
-
-#+begin_src elisp
-(setq elfeed-show-mode-hook
-      (lambda ()
-	(set-face-attribute 'variable-pitch (selected-frame) :font (font-spec :family "Noto Serif" :size 14))
-	(setq fill-column 120)
-	(setq elfeed-show-entry-switch #'my-show-elfeed)))
-
-(defun my-show-elfeed (buffer)
-  (with-current-buffer buffer
-    (setq buffer-read-only nil)
-    (goto-char (point-min))
-    (re-search-forward "\n\n")
-    (fill-individual-paragraphs (point) (point-max))
-    (setq buffer-read-only t))
-  (switch-to-buffer buffer))
-#+end_src
-
-#+RESULTS:
-: my-show-elfeed
-
-*** TODO Limit number of entries (i.e. delete older entries automatically)
-* Magit
-** Default directory setup
-#+begin_src elisp
-(setq magit-repository-directories '(("~/src" . 3) ("~/.emacs.d") ("~/.doom")))
-#+end_src
-** TODO Automatically signing commits
-Understand this code!
-#+begin_src elisp
-;(after! magit
-;  (setq magit-commit-arguments '("--gpg-sign=B511A07485FD1360")
-;        magit-rebase-arguments '("--autostash" "--gpg-sign=B511A07485FD1360")
-;        magit-pull-arguments   '("--rebase" "--autostash" "--gpg-sign=B511A07485FD1360"))
-;  (magit-define-popup-option 'magit-rebase-popup
-;    ?S "Sign using gpg" "--gpg-sign=" #'magit-read-gpg-secret-key))
-#+end_src
-** Magit hub
-#+begin_src elisp
-(setq +magit-hub-features t)
-#+end_src
-** Preferred git url method
-#+begin_src elisp
-(after! magithub (setq magithub-preferred-remote-method 'git_url))
-#+end_src
-** Default directory for cloning new repositories
-#+begin_src elisp
-(after! magithub (setq magithub-clone-default-directory "~/src/github.com"))
+  (setq org-capture-templates
+        (doct '(("Todo" :keys "t"
+                 :file +org-capture-todo-file
+                 :prepend t
+                 :template ("* %{todo-state} %^{Description}"
+                            ":PROPERTIES:"
+                            ":Created: %U"
+                            ":END:"
+                            "%?")
+                 :children (("Work"  :keys "w"
+                             :headline   "Work"
+                             :todo-state "TODO"
+                             :hook (lambda () (message "\"Work\" selected.")))
+                            ("General" :keys "g"
+                             :headline   "General"
+                             :todo-state "TODO")))
+                ("Note" :keys "n"
+                 :file +org-capture-notes-file
+                 :prepend t
+                 :template ("* %^{Description}"
+                            ":PROPERTIES:"
+                            ":Created: %U"
+                            ":END:"
+                            "%?")
+                 :children (("Work"  :keys "w"
+                             :headline   "Work"
+                             :hook (lambda () (message "\"Work\" selected.")))
+                            ("General" :keys "g"
+                             :headline   "Misc")
+                            ("Music" :keys "m"
+                             :headline   "Misc")
+                            ("Science"  :keys "Science"
+                             :headline   "Science")))))))
 #+end_src
