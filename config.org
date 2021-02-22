@@ -1,51 +1,9 @@
 #+TITLE: Literate Emacs Config
 #+AUTHOR: Jacob Brady
-#+PROPERTY: header-args:emacs-lisp :tangle yes :cache yes :results silent :padline no :comments link
+#+PROPERTY: header-args :tangle-mode
+#+startup: overview
 
-* General setup
-Set up user name and email
-#+begin_src emacs-lisp
-;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
-
-;; Place your private configuration here! Remember, you do not need to run 'doom
-;; sync' after modifying this file!
-
-;; Some functionality uses this to identify you, e.g. GPG configuration, email
-;; clients, file templates and snippets.
-(setq user-full-name "Jacob Brady"
-      user-mail-address "jacob.brady@protonmail.com")
-#+end_src
-
-** Theme
-#+begin_src emacs-lisp
-;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
-;; are the three important ones:
-;;
-;; + `doom-font'
-;; + `doom-variable-pitch-font'
-;; + `doom-big-font' -- used for `doom-big-font-mode'; use this for
-;;   presentations or streaming.
-;;
-;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
-;; font string. You generally only need these two:
-;; (setq doom-font (font-spec :family "monospace" :size 12 :weight 'semi-light)
-;;       doom-variable-pitch-font (font-spec :family "sans" :size 13))
-
-;; There are two ways to load a theme. Both assume the theme is installed and
-;; available. You can either set `doom-theme' or manually load a theme with the
-;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-peacock)
-
-(setq doom-font (font-spec :family "JetBrains Mono" :size 24)
-      doom-big-font (font-spec :family "JetBrains Mono" :size 36)
-      doom-variable-pitch-font (font-spec :family "DejaVu Serif" :size 24)
-      doom-serif-font (font-spec :family "DejaVu Serif" :weight 'light))
-#+end_src
-
-#+RESULTS:
-: #<font-spec nil nil DejaVu\ Serif nil nil light nil nil nil nil nil nil nil>
-
-** init.el
+* init.el
 :PROPERTIES:
 :header-args:emacs-lisp: :tangle no
 :END:
@@ -111,10 +69,10 @@ Here is the init.el code which is split into sections marked <<section-name>>
        <<doom-app>>
 
        :config
-       <<doom-config>> 
+       <<doom-config>>
 )
 #+end_src
-*** doom-completion
+** doom-completion
 #+name: doom-completion
 #+begin_src emacs-lisp
     company           ; the ultimate code completion backend
@@ -125,7 +83,7 @@ Here is the init.el code which is split into sections marked <<section-name>>
      +prescient)
 #+end_src
 
-*** doom-ui
+** doom-ui
 #+name: doom-ui
 #+begin_src emacs-lisp
     ;;deft              ; notational velocity for Emacs
@@ -154,7 +112,7 @@ Here is the init.el code which is split into sections marked <<section-name>>
     ;;zen               ; distraction-free coding or writing
 #+end_src
 
-*** doom-editor
+** doom-editor
 #+name: doom-editor
 #+begin_src emacs-lisp
     (evil +everywhere); come to the dark side, we have cookies
@@ -171,7 +129,7 @@ Here is the init.el code which is split into sections marked <<section-name>>
     ;;word-wrap         ; soft wrapping with language-aware indent
 #+end_src
 
-*** doom-emacs
+** doom-emacs
 #+name: doom-emacs
 #+begin_src emacs-lisp
     (dired +icons)    ; making dired pretty [functional]
@@ -181,7 +139,7 @@ Here is the init.el code which is split into sections marked <<section-name>>
     vc                ; version-control and Emacs, sitting in a tree
 #+end_src
 
-*** doom-term
+** doom-term
 #+name: doom-term
 #+begin_src emacs-lisp
     ;;eshell            ; the emacs-lisp shell that works everywhere
@@ -189,14 +147,14 @@ Here is the init.el code which is split into sections marked <<section-name>>
     ;;term              ; basic terminal emulator for Emacs
     vterm             ; the best terminal emulation in Emacs
 #+end_src
-*** doom-checkers
+** doom-checkers
 #+name: doom-checkers
-#+begin_src emacs-lisp 
+#+begin_src emacs-lisp
     syntax              ; tasing you for every semicolon you forget
     (:if (executable-find "aspell") spell) ; tasing you for misspelling mispelling
     ;;grammar           ; tasing grammar mistake every you make
 #+end_src
-*** doom-tools
+** doom-tools
 #+name: doom-tools
 #+begin_src emacs-lisp
     ;;ansible
@@ -220,13 +178,13 @@ Here is the init.el code which is split into sections marked <<section-name>>
     ;;tmux              ; an API for interacting with tmux
     ;;upload            ; map local to remote projects via ssh/ftp
 #+end_src
-*** doom-os
+** doom-os
 #+name: doom-os
 #+begin_src emacs-lisp
     (:if IS-MAC macos)  ; improve compatibility with macOS
     ;;tty               ; improve the terminal Emacs experience
 #+end_src
-*** doom-lang
+** doom-lang
 #+name: doom-lang
 #+begin_src emacs-lisp
     ;;agda              ; types of types of types of types...
@@ -296,7 +254,7 @@ Here is the init.el code which is split into sections marked <<section-name>>
     ;;web               ; the tubes
     yaml              ; JSON, but readable
 #+end_src
-*** doom-app
+** doom-app
 #+name: doom-app
 #+begin_src emacs-lisp
     ;;calendar
@@ -304,19 +262,17 @@ Here is the init.el code which is split into sections marked <<section-name>>
     (rss +org)        ; emacs as an RSS reader
     ;;twitter           ; twitter client https://twitter.com/vnought
 #+end_src
-*** doom-config
+** doom-config
 #+name: doom-config
 #+begin_src emacs-lisp
     literate
     (default +bindings +smartparens +snippets +evil-commands)
 #+end_src
-** packages.el
+* packages
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle no
+:header-args: :tangle packages.el
 :END:
-#+name: packages.el
-#+attr_html: :collapsed t
-#+begin_src emacs-lisp :tangle "packages.el" :noweb no-export :comments none
+#+begin_src emacs-lisp 
 ;; -*- no-byte-compile: t; -*-
 ;;; $DOOMDIR/packages.el
 
@@ -326,10 +282,11 @@ Here is the init.el code which is split into sections marked <<section-name>>
 
 
 ;; To install SOME-PACKAGE from MELPA, ELPA or emacsmirror:
-(package! scihub)
 (package! doct)
 (package! elisp-format)
-(package! pdf-tools)
+(package! mixed-pitch)
+;; only install pdf-tools on linux
+(unless IS-MAC (package! pdf-tools))
 
 
 ;; To install a package directly from a remote git repo, you must specify a
@@ -372,6 +329,108 @@ Here is the init.el code which is split into sections marked <<section-name>>
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
                                         ;(unpin! t)
 #+end_src
+* General configuration 
+:PROPERTIES:
+:header-args: :tangle config.el
+:END:
+** User information
+Set up user name and email
+#+begin_src emacs-lisp
+;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
+
+;; Place your private configuration here! Remember, you do not need to run 'doom
+;; sync' after modifying this file!
+
+;; Some functionality uses this to identify you, e.g. GPG configuration, email
+;; clients, file templates and snippets.
+(setq user-full-name "Jacob Brady"
+      user-mail-address "jacob.brady@protonmail.com")
+#+end_src
+
+** Directories
+#+begin_src emacs-lisp
+(setq my/home-dir "/home/j-brady/")
+(setq my/org-dir (concat my/home-dir "org/"))
+(setq my/org-roam-dir (concat my/org-dir "org-roam/"))
+#+end_src
+*** org directories
+#+begin_src emacs-lisp
+(setq org-directory my/org-dir)
+(setq org-roam-directory my/org-roam-dir)
+#+end_src
+
+** Fonts
+#+begin_src emacs-lisp
+
+(if IS-MAC
+    (setq doom-font (font-spec :family "Monaco" :size 14)
+          doom-big-font (font-spec :family "Monaco" :size 24)
+          doom-variable-pitch-font (font-spec :family "Palatino" :size 14)
+          doom-serif-font (font-spec :family "Palatino" :weight 'light))
+
+  (setq doom-font (font-spec :family "JetBrains Mono" :size 14)
+        doom-big-font (font-spec :family "JetBrains Mono" :size 24)
+        doom-variable-pitch-font (font-spec :family "Alegreya" :size 14)
+        doom-serif-font (font-spec :family "Alegreya" :weight 'light)))
+(after! doom-themes
+  (setq doom-themes-enable-bold t)
+  (setq doom-themes-enable-italic t))
+
+(custom-set-faces!
+  '(font-lock-comment-face :slant italic)
+  '(font-lock-keyword-face :slant italic))
+
+(use-package mixed-pitch
+  :hook
+  (text-mode . mixed-pitch-mode))
+;;(add-hook! 'org-mode-hook #'mixed-pitch-mode)
+;;(setq mixed-pitch-variable-pitch-cursor nil)
+;;(add-hook! org-mode :append
+;;          #'visual-line-mode
+;;           #'variable-pitch-mode)
+#+end_src
+
+** Theme
+#+begin_src emacs-lisp
+;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
+;; are the three important ones:
+;;
+;; + `doom-font'
+;; + `doom-variable-pitch-font'
+;; + `doom-big-font' -- used for `doom-big-font-mode'; use this for
+;;   presentations or streaming.
+;;
+;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
+;; font string. You generally only need these two:
+;; (setq doom-font (font-spec :family "monospace" :size 12 :weight 'semi-light)
+;;       doom-variable-pitch-font (font-spec :family "sans" :size 13))
+
+;; There are two ways to load a theme. Both assume the theme is installed and
+;; available. You can either set `doom-theme' or manually load a theme with the
+;; `load-theme' function. This is the default:
+;;(setq doom-theme 'doom-vibrant)
+(use-package! doom-themes
+  :config
+  ;; Global settings (defaults)
+  (setq doom-themes-enable-bold t      ; if nil, bold is universally disabled
+        doom-themes-enable-italic t)   ; if nil, italics is universally disabled
+  ;; (load-theme 'doom-acario-light t)
+  ;; (load-theme 'leuven t)
+  ;; (load-theme 'doom-dark+ t)
+  ;; (load-theme 'doom-solarized-light t)
+  ;; (load-theme 'doom-one-light t)
+  (load-theme 'doom-vibrant t)
+
+  ;; Enable flashing mode-line on errors
+  (doom-themes-visual-bell-config)
+
+  ;; Corrects (and improves) org-mode's native fontification.
+  (doom-themes-org-config))
+#+end_src
+
+#+RESULTS:
+: #<font-spec nil nil DejaVu\ Serif nil nil light nil nil nil nil nil nil nil>
+
 ** Evil mode configuration
 Allows for more granular undo. Default (nil) undo will undo entire block from a given 'insert mode' action.
 #+begin_src emacs-lisp
@@ -387,7 +446,7 @@ Allows for more granular undo. Default (nil) undo will undo entire block from a 
 
 #+end_src
 ** Projects
-Set up project directories. Apparently these need to be stringp.
+Set up project directories.
 #+begin_src emacs-lisp
 (projectile-add-known-project "~/org")
 ;; (projectile-add-known-project "~/org-roam")
@@ -396,7 +455,7 @@ Set up project directories. Apparently these need to be stringp.
 ** PDFs
 Use pdf-tools!
 #+begin_src emacs-lisp
-(pdf-tools-install)
+(unless IS-MAC (pdf-tools-install))
 #+end_src
 ** TODO Shell
 Figure out how to change shells. Would like to be able to run csh and bash interchangeably
@@ -408,38 +467,6 @@ Figure out how to change shells. Would like to be able to run csh and bash inter
 (setq display-line-numbers-type t)
 #+end_src
 
-* org-mode
-:PROPERTIES:
-:CUSTOM_ID: org
-:header-args:emacs-lisp: :tangle no :noweb-ref org-conf
-:END:
-
-Startup org-mode with inline images:
-#+begin_src emacs-lisp
-(setq org-startup-with-inline-images t)
-#+end_src
-
-#+begin_src emacs-lisp
-(after! org
-  <<org-conf>>
-  )
-#+end_src
-
-Basic org-mode set-up
-#+begin_src emacs-lisp
-;; If you use `org' and don't want your org files in the default location below,
-;; change `org-directory'. It must be set before org loads!
-(setq org-directory "~/org/")
-(setq org-babel-default-header-args
-      '((:session . "none")
-        (:results . "replace")
-        (:exports . "code")
-        (:cache . "no")
-        (:noweb . "no")
-        (:hlines . "no")
-        (:tangle . "no")
-        (:comments . "link")))
-#+end_src
 ** Spellcheck
 #+begin_src emacs-lisp
 (set-company-backend!
@@ -451,38 +478,84 @@ Basic org-mode set-up
     company-files
     company-yasnippet))
 #+end_src
-** org-babel
-
-
-** Notes
+** org-mode
+Startup org-mode with inline images:
 #+begin_src emacs-lisp
-;;(after! org
-;;  (setq org-default-notes-file (expand-file-name "notes.org" org-directory)))
+(setq org-startup-with-inline-images t)
 #+end_src
-** TODO Refiling
-Understand refiling
 
-** Agenda
+#+begin_src emacs-lisp
+(after! org
 
-#+begin_src emac-lisp
+;; If you use `org' and don't want your org files in the default location below,
+;; change `org-directory'. It must be set before org loads!
+;;(setq org-babel-default-header-args
+;;      '((:session . "none")
+;;        (:results . "replace")
+;;        (:exports . "code")
+;;        (:cache . "no")
+;;        (:noweb . "no")
+;;        (:hlines . "no")
+;;        (:tangle . "no")
+;;        (:comments . "link")))
+
 ;; Include entries from the emacs diary
 (setq org-agenda-include-diary t)
-#+end_src
 
-All files in the org directory can contribute to the org-agenda
-#+begin_src emacs-lisp
+;; All files in the org directory can contribute to the org-agenda
 (setq org-agenda-files (list org-directory))
                         ;"~/org/holidays.org"
                         ;"~/org/todo.org"))
 ;(setq
  ; org-deadline-warning-days 7
  ; org-agenda-breadcrumbs-separator " ❱ ")
+;;The following will append into archive file where %s is the file name from which archive is being created.
+(setq org-archive-location (concat org-directory "archive/%s_archive::"))
+  
+  (setq org-capture-template '())
+  (setq org-capture-templates
+        (doct '(("Todo" :keys "t"
+                 :file +org-capture-todo-file
+                 :prepend t
+                 :template ("* %{todo-state} %^{Description}"
+                            ":PROPERTIES:"
+                            ":Created: %U"
+                            ":END:"
+                            "%?")
+                 :children (("Work"  :keys "w"
+                             :headline   "Work"
+                             :todo-state "TODO"
+                             :hook (lambda () (message "\"Work\" selected.")))
+                            ("General" :keys "g"
+                             :headline   "General"
+                             :todo-state "TODO")))
+                ("Note" :keys "n"
+                 :file +org-capture-notes-file
+                 :prepend t
+                 :template ("* %^{Description}"
+                            ":PROPERTIES:"
+                            ":Created: %U"
+                            ":END:"
+                            "%?")
+                 :children (("Work"  :keys "w"
+                             :headline   "Work"
+                             :hook (lambda () (message "\"Work\" selected.")))
+                            ("General" :keys "g"
+                             :headline   "Misc")
+                            ("Music" :keys "m"
+                             :headline   "Misc")
+                            ("Science"  :keys "Science"
+                             :headline   "Science")))))))
+
 #+end_src
 
-The following will append into archive file where %s is the file name from which archive is being created.
+** Notes
 #+begin_src emacs-lisp
-(setq org-archive-location (concat org-directory "archive/%s_archive::"))
+;;(after! org
+;;  (setq org-default-notes-file (expand-file-name "notes.org" org-directory)))
 #+end_src
+
+
 
 [[https:www.rousette.org.uk/archives/doom-emacs-tweaks-org-journal-and-org-super-agenda/][Interesting blog post about org-super-agenda]]
 ** Beautifying org-mode
@@ -490,60 +563,78 @@ The following will append into archive file where %s is the file name from which
 ;;(package! org-pretty-table-mode
 ;;  :recipe (:host github :repo "Fuco1/org-pretty-table"))
 #+end_src
+
 *** TODO understand this code!
 #+begin_src emacs-lisp
-;;(font-lock-add-keywords 'org-mode
-;;                        '(("^ *\\([-]\\) "
-;;                           (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
-;;;
-;;(let* ((variable-tuple
-;;        (cond
-;;              ((x-list-fonts "DejaVu Serif")    '(:font "DejaVu Serif"))
-;;              ((x-list-fonts "ETBembo")         '(:font "ETBembo"))
-;;              ((x-list-fonts "Source Sans Pro") '(:font "Source Sans Pro"))
-;;              ((x-list-fonts "Lucida Grande")   '(:font "Lucida Grande"))
-;;              ((x-list-fonts "Verdana")         '(:font "Verdana"))
-;;              ((x-family-fonts "Sans Serif")    '(:family "Sans Serif"))
-;;              (nil (warn "Cannot find a Sans Serif Font.  Install Source Sans Pro."))))
-;;       (headline `(:inherit default :weight bold)))
-;;
-;;  (custom-theme-set-faces
-;;   'user
-;;   `(org-level-8 ((t (,@headline ,@variable-tuple))))
-;;   `(org-level-7 ((t (,@headline ,@variable-tuple))))
-;;   `(org-level-6 ((t (,@headline ,@variable-tuple))))
-;;   `(org-level-5 ((t (,@headline ,@variable-tuple :height 1.0))))
-;;   `(org-level-4 ((t (,@headline ,@variable-tuple :height 1.1))))
-;;   `(org-level-3 ((t (,@headline ,@variable-tuple :height 1.2))))
-;;   `(org-level-2 ((t (,@headline ,@variable-tuple :height 1.3))))
-;;   `(org-level-1 ((t (,@headline ,@variable-tuple :height 1.4))))
-;;   `(org-document-title ((t (,@headline ,@variable-tuple :height 1.0 :underline nil))))))
-;;
-;;(custom-theme-set-faces
-;; 'user
-;; '(variable-pitch ((t (:family "DejaVu Serif" :height 120))))
-;; '(fixed-pitch ((t ( :family "Fira Code" :height 100)))))
-;;
-;;(add-hook 'org-mode-hook 'variable-pitch-mode)
-;;(add-hook 'org-mode-hook 'visual-line-mode)
-;;
-;;(custom-theme-set-faces
-;; 'user
-;; '(org-block ((t (:inherit fixed-pitch))))
-;; '(org-code ((t (:inherit (shadow fixed-pitch)))))
-;; '(org-document-info ((t (:foreground "dark orange"))))
-;; '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
-;; '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
-;; '(org-link ((t (:foreground "royal blue" :underline t))))
-;; '(org-meta-line ((t (:inherit (font-lock-comment-face fixed-pitch)))))
-;; '(org-property-value ((t (:inherit fixed-pitch))) t)
-;; '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
-;; '(org-table ((t (:inherit fixed-pitch :foreground "#83a598"))))
-;; '(org-tag ((t (:inherit (shadow fixed-pitch) :weight bold :height 0.8))))
-;; '(org-verbatim ((t (:inherit (shadow fixed-pitch))))))
+                                        ;(font-lock-add-keywords 'org-mode
+                                        ;                        '(("^ *\\([-]\\) "
+                                        ;                           (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+                                        ;
+                                        ;(if IS-MAC
+                                        ;    (let* ((variable-tuple
+                                        ;            (cond
+                                        ;             ((x-list-fonts "Palatino")    '(:font "Palatino"))
+                                        ;             ((x-list-fonts "Volta Modern Text") '(:font "Volta Modern Text"))
+                                        ;             ((x-list-fonts "Source Sans Pro") '(:font "Source Sans Pro"))
+                                        ;             ((x-list-fonts "Lucida Grande")   '(:font "Lucida Grande"))
+                                        ;             ((x-list-fonts "Verdana")         '(:font "Verdana"))
+                                        ;             ((x-family-fonts "Sans Serif")    '(:family "Sans Serif"))
+                                        ;             (nil (warn "Cannot find a Sans Serif Font.  Install Source Sans Pro."))))
+                                        ;           (headline `(:inherit default :weight bold)))
+                                        ;      (let* ((variable-tuple
+                                        ;              (cond
+                                        ;               ((x-list-fonts "DejaVu Serif")    '(:font "DejaVu Serif"))
+                                        ;               ((x-list-fonts "ETBembo")         '(:font "ETBembo"))
+                                        ;               ((x-list-fonts "Source Sans Pro") '(:font "Source Sans Pro"))
+                                        ;               ((x-list-fonts "Lucida Grande")   '(:font "Lucida Grande"))
+                                        ;               ((x-list-fonts "Verdana")         '(:font "Verdana"))
+                                        ;               ((x-family-fonts "Sans Serif")    '(:family "Sans Serif"))
+                                        ;               (nil (warn "Cannot find a Sans Serif Font.  Install Source Sans Pro."))))
+                                        ;             (headline `(:inherit default :weight bold)))
+                                        ;
+                                        ;        )
+                                        ;
+                                        ;      (custom-theme-set-faces
+                                        ;       'user
+                                        ;       `(org-level-8 ((t (,@headline ,@variable-tuple))))
+                                        ;       `(org-level-7 ((t (,@headline ,@variable-tuple))))
+                                        ;       `(org-level-6 ((t (,@headline ,@variable-tuple))))
+                                        ;       `(org-level-5 ((t (,@headline ,@variable-tuple :height 1.0))))
+                                        ;       `(org-level-4 ((t (,@headline ,@variable-tuple :height 1.1))))
+                                        ;       `(org-level-3 ((t (,@headline ,@variable-tuple :height 1.2))))
+                                        ;       `(org-level-2 ((t (,@headline ,@variable-tuple :height 1.3))))
+                                        ;       `(org-level-1 ((t (,@headline ,@variable-tuple :height 1.4))))
+                                        ;       `(org-document-title ((t (,@headline ,@variable-tuple :height 1.0 :underline nil))))))
+                                        ;
+                                        ;  (if IS-MAC
+                                        ;      (custom-theme-set-faces
+                                        ;       'user
+                                        ;       '(variable-pitch ((t (:family "Palatino" :height 120))))
+                                        ;       '(fixed-pitch ((t ( :family "Monaco" :height 100)))))
+                                        ;    (custom-theme-set-faces
+                                        ;     'user
+                                        ;     '(variable-pitch ((t (:family "DejaVu Serif" :height 120))))
+                                        ;     '(fixed-pitch ((t ( :family "JetBrains Mono" :height 100)))))
+                                        ;    )
+                                        ;
+                                        ;  (add-hook 'org-mode-hook 'variable-pitch-mode)
+                                        ;  (add-hook 'org-mode-hook 'visual-line-mode)
+                                        ;
+                                        ;  (custom-theme-set-faces
+                                        ;   'user
+                                        ;   '(org-block ((t (:inherit fixed-pitch))))
+                                        ;   '(org-code ((t (:inherit (shadow fixed-pitch)))))
+                                        ;   '(org-document-info ((t (:foreground "dark orange"))))
+                                        ;   '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
+                                        ;   '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
+                                        ;   '(org-link ((t (:foreground "royal blue" :underline t))))
+                                        ;   '(org-meta-line ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+                                        ;   '(org-property-value ((t (:inherit fixed-pitch))) t)
+                                        ;   '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+                                        ;   '(org-table ((t (:inherit fixed-pitch :foreground "#83a598"))))
+                                        ;   '(org-tag ((t (:inherit (shadow fixed-pitch) :weight bold :height 0.8))))
+                                        ;   '(org-verbatim ((t (:inherit (shadow fixed-pitch))))))
 #+end_src
-
-#+RESULTS:
 
 ** Exporting
 Found this nice code snippet for creating individual export directories depending on file extension type ([[https:rwx.io/posts/org-export-configurations/][link]]).
@@ -611,25 +702,28 @@ RSS feeds are updated using C-c C-x g and updated along with opening up the feed
 #+begin_src emacs-lisp
 (setq elfeed-feeds
       '(("https://blogs.sciencemag.org/pipeline/feed" blog)
-        "http://practicalfragments.blogspot.com/feeds/posts/default"
+        ("http://practicalfragments.blogspot.com/feeds/posts/default" blog FBS)
+        "https://elifesciences.org/rss/subject/cancer-biology.xml"
+        "https://www.fiercepharma.com/rss/xml"
         "https://pubmed.ncbi.nlm.nih.gov/rss/journals/9110829/?limit=15&name=J%20Biomol%20NMR&utm_campaign=journals"
         "https://pubmed.ncbi.nlm.nih.gov/rss/search/1rgUKXhZzOOSeCofj8gdJK1nh4UEkQrpfCszfAT4Exq_f5woOu/?limit=15&utm_campaign=pubmed-2&fc=20210209213122"
         )
       )
-
 #+end_src
 
 #+RESULTS:
-| (https://blogs.sciencemag.org/pipeline/feed blog) | http://practicalfragments.blogspot.com/feeds/posts/default | https://pubmed.ncbi.nlm.nih.gov/rss/journals/9110829/?limit=15&name=J%20Biomol%20NMR&utm_campaign=journals | https://pubmed.ncbi.nlm.nih.gov/rss/search/1rgUKXhZzOOSeCofj8gdJK1nh4UEkQrpfCszfAT4Exq_f5woOu/?limit=15&utm_campaign=pubmed-2&fc=20210209213122 |
+| (https://blogs.sciencemag.org/pipeline/feed blog) | http://practicalfragments.blogspot.com/feeds/posts/default | https://elifesciences.org/rss/subject/cancer-biology.xml | https://www.fiercepharma.com/rss/xml | https://pubmed.ncbi.nlm.nih.gov/rss/journals/9110829/?limit=15&name=J%20Biomol%20NMR&utm_campaign=journals | https://pubmed.ncbi.nlm.nih.gov/rss/search/1rgUKXhZzOOSeCofj8gdJK1nh4UEkQrpfCszfAT4Exq_f5woOu/?limit=15&utm_campaign=pubmed-2&fc=20210209213122 |
 
 *** Customising elfeed appearance (found this code below [[https:github.com/skeeto/elfeed/issues/190][here]])
 
 #+begin_src emacs-lisp
 (setq elfeed-show-mode-hook
       (lambda ()
-	(set-face-attribute 'variable-pitch (selected-frame) :font (font-spec :family "Noto Serif" :size 14))
-	(setq fill-column 120)
-	(setq elfeed-show-entry-switch #'my-show-elfeed)))
+        (set-face-attribute 'variable-pitch (selected-frame) :font (cond IS-MAC
+                                                                         (font-spec :family "Palatino" :size 16)
+                                                                         (font-spec :family "Alegreya" :size 16)))
+        (setq fill-column 120)
+        (setq elfeed-show-entry-switch #'my-show-elfeed)))
 
 (defun my-show-elfeed (buffer)
   (with-current-buffer buffer
@@ -641,13 +735,16 @@ RSS feeds are updated using C-c C-x g and updated along with opening up the feed
   (switch-to-buffer buffer))
 #+end_src
 
+#+RESULTS:
+: my-show-elfeed
+
 *** TODO Limit number of entries (i.e. delete older entries automatically)
-* Magit
-** Default directory setup
+** Magit
+*** Default directory setup
 #+begin_src emacs-lisp
 (setq magit-repository-directories '(("~/src" . 3) ("~/.emacs.d") ("~/.doom")))
 #+end_src
-** TODO Automatically signing commits
+*** TODO Automatically signing commits
 Understand this code!
 #+begin_src emacs-lisp
 ;(after! magit
@@ -657,22 +754,26 @@ Understand this code!
 ;  (magit-define-popup-option 'magit-rebase-popup
 ;    ?S "Sign using gpg" "--gpg-sign=" #'magit-read-gpg-secret-key))
 #+end_src
-** Magit hub
+*** Magit hub
 #+begin_src emacs-lisp
 (setq +magit-hub-features t)
 #+end_src
-** Preferred git url method
+*** Preferred git url method
 #+begin_src emacs-lisp
 (after! magithub (setq magithub-preferred-remote-method 'git_url))
 #+end_src
-** Default directory for cloning new repositories
+*** Default directory for cloning new repositories
 #+begin_src emacs-lisp
 (after! magithub (setq magithub-clone-default-directory "~/src/github.com"))
 #+end_src
-* Org-roam
+** Org-roam
+#+begin_src emacs-lisp
+(concat (file-name-as-directory "~/org") "file")
+(expand-file-name "file" "~/org")
+#+end_src
 Setting org-roam directory
-#+begin_src emacs-lisp :tangle yes
-(setq org-roam-directory "~/org/org-roam")
+#+begin_src emacs-lisp 
+;;(setq org-roam-directory "~/org/org-roam")
 (add-hook 'after-init-hook 'org-roam-mode)
 #+end_src
 
@@ -704,48 +805,7 @@ Setting org-roam directory
          :olp ("Journal"))))
 #+end_src
     
-* Capture templates
+** Capture templates
 
 Using doct for declarative org-capture-templates
 
-#+begin_src emacs-lisp
-(after! org
-  :config
-
-  ;;(use-package! doct
-  ;;  :commands (doct))
-
-  (setq org-capture-templates
-        (doct '(("Todo" :keys "t"
-                 :file +org-capture-todo-file
-                 :prepend t
-                 :template ("* %{todo-state} %^{Description}"
-                            ":PROPERTIES:"
-                            ":Created: %U"
-                            ":END:"
-                            "%?")
-                 :children (("Work"  :keys "w"
-                             :headline   "Work"
-                             :todo-state "TODO"
-                             :hook (lambda () (message "\"Work\" selected.")))
-                            ("General" :keys "g"
-                             :headline   "General"
-                             :todo-state "TODO")))
-                ("Note" :keys "n"
-                 :file +org-capture-notes-file
-                 :prepend t
-                 :template ("* %^{Description}"
-                            ":PROPERTIES:"
-                            ":Created: %U"
-                            ":END:"
-                            "%?")
-                 :children (("Work"  :keys "w"
-                             :headline   "Work"
-                             :hook (lambda () (message "\"Work\" selected.")))
-                            ("General" :keys "g"
-                             :headline   "Misc")
-                            ("Music" :keys "m"
-                             :headline   "Misc")
-                            ("Science"  :keys "Science"
-                             :headline   "Science")))))))
-#+end_src
