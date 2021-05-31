@@ -368,10 +368,11 @@ Set up user name and email
           doom-variable-pitch-font (font-spec :family "Palatino" :size 14)
           doom-serif-font (font-spec :family "Palatino" :weight 'light))
 
-  (setq doom-font (font-spec :family "JetBrains Mono" :size 14)
-        doom-big-font (font-spec :family "JetBrains Mono" :size 24)
-        doom-variable-pitch-font (font-spec :family "Alegreya" :size 14)
+  (setq doom-font (font-spec :family "JetBrains Mono" :size 24)
+        doom-big-font (font-spec :family "JetBrains Mono" :size 36)
+        doom-variable-pitch-font (font-spec :family "Alegreya" :size 24)
         doom-serif-font (font-spec :family "Alegreya" :weight 'light)))
+
 (after! doom-themes
   (setq doom-themes-enable-bold t)
   (setq doom-themes-enable-italic t))
@@ -451,6 +452,8 @@ Set up project directories.
 (projectile-add-known-project "~/org")
 ;; (projectile-add-known-project "~/org-roam")
 (projectile-add-known-project "~/Documents")
+(projectile-add-known-project "~/src/peakipy")
+(projectile-add-known-project "~/src/bson_image")
 #+end_src
 ** PDFs
 Use pdf-tools!
@@ -487,67 +490,106 @@ Startup org-mode with inline images:
 #+begin_src emacs-lisp
 (after! org
 
-;; If you use `org' and don't want your org files in the default location below,
-;; change `org-directory'. It must be set before org loads!
-;;(setq org-babel-default-header-args
-;;      '((:session . "none")
-;;        (:results . "replace")
-;;        (:exports . "code")
-;;        (:cache . "no")
-;;        (:noweb . "no")
-;;        (:hlines . "no")
-;;        (:tangle . "no")
-;;        (:comments . "link")))
+  ;; If you use `org' and don't want your org files in the default location below,
+  ;; change `org-directory'. It must be set before org loads!
+  ;;(setq org-babel-default-header-args
+  ;;      '((:session . "none")
+  ;;        (:results . "replace")
+  ;;        (:exports . "code")
+  ;;        (:cache . "no")
+  ;;        (:noweb . "no")
+  ;;        (:hlines . "no")
+  ;;        (:tangle . "no")
+  ;;        (:comments . "link")))
 
-;; Include entries from the emacs diary
-(setq org-agenda-include-diary t)
+  ;; Include entries from the emacs diary
+  (setq org-agenda-include-diary t)
 
-;; All files in the org directory can contribute to the org-agenda
-(setq org-agenda-files (list org-directory))
-                        ;"~/org/holidays.org"
-                        ;"~/org/todo.org"))
-;(setq
- ; org-deadline-warning-days 7
- ; org-agenda-breadcrumbs-separator " ❱ ")
-;;The following will append into archive file where %s is the file name from which archive is being created.
-(setq org-archive-location (concat org-directory "archive/%s_archive::"))
-  
-  (setq org-capture-template '())
+  ;; All files in the org directory can contribute to the org-agenda
+  (setq org-agenda-files (list org-directory))
+                                        ;"~/org/holidays.org"
+                                        ;"~/org/todo.org"))
+                                        ;(setq
+                                        ; org-deadline-warning-days 7
+                                        ; org-agenda-breadcrumbs-separator " ❱ ")
+  ;;The following will append into archive file where %s is the file name from which archive is being created.
+  (setq org-archive-location (concat org-directory "archive/%s_archive::"))
+
+  (defun org-journal-find-location ()
+    ;; Open today's journal, but specify a non-nil prefix argument in order to
+    ;; inhibit inserting the heading; org-capture will insert the heading.
+    (org-journal-new-entry t)
+    (unless (eq org-journal-file-type 'daily)
+      (org-narrow-to-subtree))
+    (goto-char (point-max)))
+
+  ;;(setq org-capture-templates '())
+
+  (setq org-capture-templates '(("j" "Journal entry" plain (function org-journal-find-location)
+                                 "** %^{Title}-(%(format-time-string org-journal-time-format))\n%i%?"
+                                 :jump-to-captured t :immediate-finish t)))
+
   (setq org-capture-templates
-        (doct '(("Todo" :keys "t"
-                 :file +org-capture-todo-file
-                 :prepend t
-                 :template ("* %{todo-state} %^{Description}"
-                            ":PROPERTIES:"
-                            ":Created: %U"
-                            ":END:"
-                            "%?")
-                 :children (("Work"  :keys "w"
-                             :headline   "Work"
-                             :todo-state "TODO"
-                             :hook (lambda () (message "\"Work\" selected.")))
-                            ("General" :keys "g"
-                             :headline   "General"
-                             :todo-state "TODO")))
-                ("Note" :keys "n"
-                 :file +org-capture-notes-file
-                 :prepend t
-                 :template ("* %^{Description}"
-                            ":PROPERTIES:"
-                            ":Created: %U"
-                            ":END:"
-                            "%?")
-                 :children (("Work"  :keys "w"
-                             :headline   "Work"
-                             :hook (lambda () (message "\"Work\" selected.")))
-                            ("General" :keys "g"
-                             :headline   "Misc")
-                            ("Music" :keys "m"
-                             :headline   "Misc")
-                            ("Science"  :keys "Science"
-                             :headline   "Science")))))))
+        (doct-add-to org-capture-templates
+                     '(("Todo" :keys "t"
+                        :file +org-capture-todo-file
+                        :prepend t
+                        :template ("* %{todo-state} %^{Description}"
+                                   ":PROPERTIES:"
+                                   ":Created: %U"
+                                   ":END:"
+                                   "%?")
+                        :children (("Work"  :keys "w"
+                                    :headline   "Work"
+                                    :todo-state "TODO"
+                                    :hook (lambda () (message "\"Work\" selected.")))
+                                   ("General" :keys "g"
+                                    :headline   "General"
+                                    :todo-state "TODO")))
+                       ("Note" :keys "n"
+                        :file +org-capture-notes-file
+                        :prepend t
+                        :template ("* %^{Description}"
+                                   ":PROPERTIES:"
+                                   ":Created: %U"
+                                   ":END:"
+                                   "%?")
+                        :children (("Work"  :keys "w"
+                                    :headline   "Work"
+                                    :hook (lambda () (message "\"Work\" selected.")))
+                                   ("General" :keys "g"
+                                    :headline   "Misc")
+                                   ("Music" :keys "m"
+                                    :headline   "Misc")
+                                   ("Science"  :keys "s"
+                                    :headline   "Science")))
 
+                       ;;("Journal entry" :keys "j"
+                       ;; :function org-journal-find-location
+                       ;; :type plain
+                       ;; ;;:template ("* %^{Description}"
+                       ;; ;;           "%?")
+                       ;; :jump-to-captured t :immediate-finish t
+                       ;; :children (("Work" :keys "w"
+                       ;;             :headline "Work")))
+
+                       ;;"%(concat org-journal-date-prefix (format-time-string org-journal-date-format))"
+                       ;;                            ;;":PROPERTIES:\n:CREATED: %(format-time-string org-journal-created-property-timestamp-format)\n:END:"
+                       ;;                                       ;  ;        "* %^{Title}"
+                       ;;                          "** %(format-time-string org-journal-time-format)%^{Description}\n%i%?"
+                       ;;                        )
+                       ;; ;;"** %(format-time-string org-journal-time-format)%^{Title}\n%i%?"
+                       ;;              :jump-to-captured t :immediate-finish t)
+                       ;;:children (("Project 1" :keys "1" :headline "Project 1")))
+                       ))))
 #+end_src
+
+#+RESULTS:
+| t  | Todo    |       |                                                |                                |          |   |       |                                                                                                                                                                                                                                                                                   |
+| tw | Work    | entry | (file+headline +org-capture-todo-file Work)    | (function doct--fill-template) | :prepend | t | :doct | (:doct-name Work :keys w :headline Work :todo-state TODO :hook (lambda nil (message "Work" selected.)) :inherited-keys tw :file +org-capture-todo-file :prepend t :template (* %{todo-state} %^{Description} :PROPERTIES: :Created: %U :END: %?) :doct-custom (:todo-state TODO)) |
+| tg | General | entry | (file+headline +org-capture-todo-file General) | (function doct--fill-template) | :prepend | t | :doct | (:doct-name General :keys g :headline General :todo-state TODO :inherited-keys tg :file +org-capture-todo-file :prepend t :template (* %{todo-state} %^{Description} :PROPERTIES: :Created: %U :END: %?) :doct-custom (:todo-state TODO))                                         |
+| n  | Note    |       |                                                |                                |          |   |       |                                                                                                                                                                                                                                                                                   |
+| nw | Work    | entry | (file+headline +org-capture-notes-file Work)   | * %^{Description}              |          |   |       |                                                                                                                                                                                                                                                                                   |
 
 ** Notes
 #+begin_src emacs-lisp
@@ -679,7 +721,7 @@ The following allows org babel to use a particular python environment. In this c
 ;; they are implemented.
 
 ** RSS feeds
-
+*** org-feed
 RSS feeds are updated using C-c C-x g and updated along with opening up the feed.org file with C-c C-x G
 
 #+begin_src emacs-lisp
@@ -698,30 +740,47 @@ RSS feeds are updated using C-c C-x g and updated along with opening up the feed
 "~/org/feeds.org" "Practical Fragments")))
 
 #+end_src
+*** elfeed (preferred)
+
+Feeds are defined as a list of list. With (url tag1 tag2 ...) you can have an arbitrary number of tags which can be used in the elfeed search buffer to filter the feeds list.
 
 #+begin_src emacs-lisp
 (setq elfeed-feeds
-      '(("https://blogs.sciencemag.org/pipeline/feed" blog)
-        ("http://practicalfragments.blogspot.com/feeds/posts/default" blog FBS)
-        "https://elifesciences.org/rss/subject/cancer-biology.xml"
-        "https://www.fiercepharma.com/rss/xml"
-        "https://pubmed.ncbi.nlm.nih.gov/rss/journals/9110829/?limit=15&name=J%20Biomol%20NMR&utm_campaign=journals"
-        "https://pubmed.ncbi.nlm.nih.gov/rss/search/1rgUKXhZzOOSeCofj8gdJK1nh4UEkQrpfCszfAT4Exq_f5woOu/?limit=15&utm_campaign=pubmed-2&fc=20210209213122"
+      '(("https://blogs.sciencemag.org/pipeline/feed" blog pipeline pharma science Lowe)
+        ("http://practicalfragments.blogspot.com/feeds/posts/default" blog FBS Erlanson practical fragments)
+        ("https://elifesciences.org/rss/subject/cancer-biology.xml" journal elife cancer)
+        ("https://www.fiercepharma.com/rss/xml" news pharma industry)
+        ("https://pubmed.ncbi.nlm.nih.gov/rss/journals/9110829/?limit=15&name=J%20Biomol%20NMR&utm_campaign=journals" journal JBNMR NMR science)
+        ("https://application.wiley-vch.de/vch/journals/2002/2002_all.xml" journal angewandte chemie)
+        ("https://pubmed.ncbi.nlm.nih.gov/rss/search/1rgUKXhZzOOSeCofj8gdJK1nh4UEkQrpfCszfAT4Exq_f5woOu/?limit=15&utm_campaign=pubmed-2&fc=20210209213122" journal)
+        ("http://pyfound.blogspot.com/atom.xml" programming python)
+        ("http://feeds.nature.com/nature/rss/current" journal science nature news)
+        ("https://science.sciencemag.org/rss/current.xml" journal science news)
         )
       )
 #+end_src
 
 #+RESULTS:
-| (https://blogs.sciencemag.org/pipeline/feed blog) | http://practicalfragments.blogspot.com/feeds/posts/default | https://elifesciences.org/rss/subject/cancer-biology.xml | https://www.fiercepharma.com/rss/xml | https://pubmed.ncbi.nlm.nih.gov/rss/journals/9110829/?limit=15&name=J%20Biomol%20NMR&utm_campaign=journals | https://pubmed.ncbi.nlm.nih.gov/rss/search/1rgUKXhZzOOSeCofj8gdJK1nh4UEkQrpfCszfAT4Exq_f5woOu/?limit=15&utm_campaign=pubmed-2&fc=20210209213122 |
+| https://blogs.sciencemag.org/pipeline/feed                                                                                                      | blog        | pipeline   | pharma   | science   | Lowe      |
+| http://practicalfragments.blogspot.com/feeds/posts/default                                                                                      | blog        | FBS        | Erlanson | practical | fragments |
+| https://elifesciences.org/rss/subject/cancer-biology.xml                                                                                        | journal     | elife      | cancer   |           |           |
+| https://www.fiercepharma.com/rss/xml                                                                                                            | news        | pharma     | industry |           |           |
+| https://pubmed.ncbi.nlm.nih.gov/rss/journals/9110829/?limit=15&name=J%20Biomol%20NMR&utm_campaign=journals                                      | journal     | JBNMR      | NMR      | science   |           |
+| https://application.wiley-vch.de/vch/journals/2002/2002_all.xml                                                                                 | journal     | angewandte | chemie   |           |           |
+| https://pubmed.ncbi.nlm.nih.gov/rss/search/1rgUKXhZzOOSeCofj8gdJK1nh4UEkQrpfCszfAT4Exq_f5woOu/?limit=15&utm_campaign=pubmed-2&fc=20210209213122 | journal     |            |          |           |           |
+| http://pyfound.blogspot.com/atom.xml                                                                                                            | programming | python     |          |           |           |
+| http://feeds.nature.com/nature/rss/current                                                                                                      | journal     | science    | nature   | news      |           |
+| https://science.sciencemag.org/rss/current.xml                                                                                                  | journal     | science    | news     |           |           |
 
-*** Customising elfeed appearance (found this code below [[https:github.com/skeeto/elfeed/issues/190][here]])
+**** Customising elfeed appearance (found this code below [[https:github.com/skeeto/elfeed/issues/190][here]])
 
+For some reason the font only works once I manually run this code after starting emacs.
 #+begin_src emacs-lisp
 (setq elfeed-show-mode-hook
       (lambda ()
-        (set-face-attribute 'variable-pitch (selected-frame) :font (cond IS-MAC
-                                                                         (font-spec :family "Palatino" :size 16)
-                                                                         (font-spec :family "Alegreya" :size 16)))
+        (set-face-attribute 'variable-pitch (selected-frame) :font (if IS-MAC
+                                                                       (font-spec :family "Palatino" :size 16)
+                                                                     (font-spec :family "Alegreya" :size 24)))
         (setq fill-column 120)
         (setq elfeed-show-entry-switch #'my-show-elfeed)))
 
@@ -738,7 +797,11 @@ RSS feeds are updated using C-c C-x g and updated along with opening up the feed
 #+RESULTS:
 : my-show-elfeed
 
+**** Searching in elfeed
+press 's' in the search buffer followed by search term. Tags are pre-pended with + (i.e. +FBS). Entries can be filtered by date by adding @1-week-old or @2-months for example will only take entries less than 1 week or 2 months old.
+
 *** TODO Limit number of entries (i.e. delete older entries automatically)
+
 ** Magit
 *** Default directory setup
 #+begin_src emacs-lisp
@@ -766,6 +829,9 @@ Understand this code!
 #+begin_src emacs-lisp
 (after! magithub (setq magithub-clone-default-directory "~/src/github.com"))
 #+end_src
+
+#+RESULTS:
+
 ** Org-roam
 #+begin_src emacs-lisp
 (concat (file-name-as-directory "~/org") "file")
@@ -804,8 +870,43 @@ Setting org-roam directory
          :head "#+title: %<%Y-%m-%d>\n"
          :olp ("Journal"))))
 #+end_src
-    
+** Org-journal
+Use a weekly journal format. If this is changed then you must run 'org-journal-invalidate-cache'.
+#+begin_src emacs-lisp
+(setq org-journal-file-type 'weekly)
+#+end_src
+
+#+RESULTS:
+: weekly
+
+Customize some variables.
+#+BEGIN_SRC emacs-lisp
+;;(setq org-journal-file-header "#+TITLE: "")
+(setq  ;;org-journal-date-prefix "#+TITLE: "
+ org-journal-date-prefix "* "
+ org-journal-time-prefix "** "
+ org-journal-date-format "%A, %d %B %Y"
+ org-journal-file-format "%Y-%m-%d.org")
+#+END_SRC
+
+#+RESULTS:
+: %Y-%m-%d.org
+
+Customising file headers to show the week and year.
+#+begin_src emacs-lisp
+(defun org-journal-file-header-func (time)
+  "Custom function to create journal header"
+
+  (concat
+   (pcase org-journal-file-type
+     ('daily "#+TITLE: Daily Journal \n#+STARTUP: showeverything")
+     ('weekly (format "#+TITLE: Journal: Week-%s\n#+STARTUP: folded" (format-time-string "%V, %Y"))))))
+
+(setq org-journal-file-header 'org-journal-file-header-func)
+#+end_src
+
+#+RESULTS:
+
 ** Capture templates
 
 Using doct for declarative org-capture-templates
-
