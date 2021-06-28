@@ -350,7 +350,7 @@ Set up user name and email
 ** Directories
 #+begin_src emacs-lisp
 (setq my/home-dir "/home/j-brady/")
-(setq my/org-dir (concat my/home-dir "org/"))
+(setq my/org-dir (concat my/home-dir "Nextcloud/org/"))
 (setq my/org-roam-dir (concat my/org-dir "org-roam/"))
 #+end_src
 *** org directories
@@ -449,7 +449,7 @@ Allows for more granular undo. Default (nil) undo will undo entire block from a 
 ** Projects
 Set up project directories.
 #+begin_src emacs-lisp
-(projectile-add-known-project "~/org")
+(projectile-add-known-project my/org-dir)
 ;; (projectile-add-known-project "~/org-roam")
 (projectile-add-known-project "~/Documents")
 (projectile-add-known-project "~/src/peakipy")
@@ -583,13 +583,6 @@ Startup org-mode with inline images:
                        ;;:children (("Project 1" :keys "1" :headline "Project 1")))
                        ))))
 #+end_src
-
-#+RESULTS:
-| t  | Todo    |       |                                                |                                |          |   |       |                                                                                                                                                                                                                                                                                   |
-| tw | Work    | entry | (file+headline +org-capture-todo-file Work)    | (function doct--fill-template) | :prepend | t | :doct | (:doct-name Work :keys w :headline Work :todo-state TODO :hook (lambda nil (message "Work" selected.)) :inherited-keys tw :file +org-capture-todo-file :prepend t :template (* %{todo-state} %^{Description} :PROPERTIES: :Created: %U :END: %?) :doct-custom (:todo-state TODO)) |
-| tg | General | entry | (file+headline +org-capture-todo-file General) | (function doct--fill-template) | :prepend | t | :doct | (:doct-name General :keys g :headline General :todo-state TODO :inherited-keys tg :file +org-capture-todo-file :prepend t :template (* %{todo-state} %^{Description} :PROPERTIES: :Created: %U :END: %?) :doct-custom (:todo-state TODO))                                         |
-| n  | Note    |       |                                                |                                |          |   |       |                                                                                                                                                                                                                                                                                   |
-| nw | Work    | entry | (file+headline +org-capture-notes-file Work)   | * %^{Description}              |          |   |       |                                                                                                                                                                                                                                                                                   |
 
 ** Notes
 #+begin_src emacs-lisp
@@ -794,9 +787,6 @@ For some reason the font only works once I manually run this code after starting
   (switch-to-buffer buffer))
 #+end_src
 
-#+RESULTS:
-: my-show-elfeed
-
 **** Searching in elfeed
 press 's' in the search buffer followed by search term. Tags are pre-pended with + (i.e. +FBS). Entries can be filtered by date by adding @1-week-old or @2-months for example will only take entries less than 1 week or 2 months old.
 
@@ -834,8 +824,8 @@ Understand this code!
 
 ** Org-roam
 #+begin_src emacs-lisp
-(concat (file-name-as-directory "~/org") "file")
-(expand-file-name "file" "~/org")
+(concat (file-name-as-directory my/org-dir) "file")
+(expand-file-name "file" my/org-dir)
 #+end_src
 Setting org-roam directory
 #+begin_src emacs-lisp 
