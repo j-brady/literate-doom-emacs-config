@@ -832,6 +832,13 @@ Setting org-roam directory
 ;;(setq org-roam-directory "~/org/org-roam")
 (add-hook 'after-init-hook 'org-roam-mode)
 #+end_src
+Customizing the org-capture template:
+#+begin_src emacs-lisp
+(setq org-roam-capture-templates '(("d" "default" plain #'org-roam-capture--get-point "%?" :file-name "%<%Y%m%d%H%M%S>-${slug}" :head "#+title: ${title}\n#+startup: overview noinlineimages\n#+roam_tags: " :unnarrowed t)))
+#+end_src
+
+#+RESULTS:
+| d | default | plain | #'org-roam-capture--get-point | %? | :file-name | %<%Y%m%d%H%M%S>-${slug} | :head | #+title: ${title} |
 
 *** Dailies
 
